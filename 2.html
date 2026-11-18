@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#f7f5f0">
+<title>점심 뭐 먹지? — 런치 룰렛</title>
+<style>
+  :root{--ink:#20251f;--muted:#777d73;--paper:#f7f5f0;--card:#fffefa;--line:#e8e5dc;--green:#315b45;--lime:#d8ef8b;--orange:#f29b65;--shadow:0 18px 55px rgba(38,48,36,.09)}
+  *{box-sizing:border-box} body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,Pretendard,"Noto Sans KR",system-ui,sans-serif;min-height:100vh}
+  button,input{font:inherit} button{cursor:pointer}
+  .shell{width:min(1120px,calc(100% - 40px));margin:auto;padding:34px 0 48px}
+  header{display:flex;align-items:center;justify-content:space-between;margin-bottom:46px}
+  .brand{display:flex;gap:10px;align-items:center;font-weight:850;letter-spacing:-.04em}.brand-mark{width:34px;height:34px;border-radius:11px;background:var(--green);color:white;display:grid;place-items:center;font-size:19px}
+  .today{font-size:12px;color:var(--muted);letter-spacing:.08em;font-weight:700}
+  .intro{text-align:center;margin:0 auto 32px}.eyebrow{display:inline-flex;align-items:center;gap:7px;background:#eaf0df;color:var(--green);border-radius:99px;padding:8px 13px;font-size:12px;font-weight:800;letter-spacing:.04em}
+  h1{font-size:clamp(34px,5vw,58px);letter-spacing:-.065em;line-height:1.12;margin:17px 0 10px}.intro p{color:var(--muted);margin:0;font-size:15px}
+  .layout{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(320px,.9fr);gap:22px;align-items:stretch}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:25px;box-shadow:var(--shadow)}
+  .wheel-panel{padding:25px;display:flex;flex-direction:column;align-items:center}
+  .panel-head{width:100%;display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.panel-head h2{font-size:15px;margin:0;letter-spacing:-.03em}.sub{font-size:12px;color:var(--muted)}
+  .wheel-wrap{position:relative;width:min(100%,440px);aspect-ratio:1;margin:8px auto 14px;display:grid;place-items:center}
+  canvas{width:100%;height:100%;display:block;filter:drop-shadow(0 9px 13px rgba(30,40,30,.12))}
+  .pointer{position:absolute;z-index:2;top:-3px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:17px solid transparent;border-right:17px solid transparent;border-top:35px solid var(--ink);filter:drop-shadow(0 3px 2px #fff)}
+  .hub{position:absolute;width:19%;aspect-ratio:1;border-radius:50%;background:var(--card);border:7px solid #fff;box-shadow:0 3px 12px #0002;display:grid;place-items:center;font-size:clamp(17px,3vw,25px);z-index:1}
+  .spin{width:min(100%,340px);border:0;border-radius:15px;background:var(--green);color:white;padding:17px 20px;font-size:16px;font-weight:850;letter-spacing:-.02em;box-shadow:0 7px 0 #1d3e2d;transition:transform .15s,box-shadow .15s}
+  .spin:hover{transform:translateY(-2px);box-shadow:0 9px 0 #1d3e2d}.spin:active{transform:translateY(4px);box-shadow:0 3px 0 #1d3e2d}.spin:disabled{opacity:.65;cursor:wait}
+  .hint{font-size:11px;color:#9a9d94;margin:13px 0 0}
+  .side{display:flex;flex-direction:column;gap:18px}.result{padding:23px 24px;min-height:172px;background:var(--green);color:white;border:0;position:relative;overflow:hidden}
+  .result:after{content:"✳";position:absolute;right:18px;bottom:-34px;font-size:150px;color:#ffffff0c;line-height:1}
+  .result .sub{color:#c8d6c9}.result h2{font-size:14px;margin:0 0 17px;color:#d8e3d7}.result-name{font-size:clamp(27px,4vw,38px);font-weight:900;letter-spacing:-.06em;margin:0 0 6px}.result-desc{font-size:12px;color:#c8d6c9;margin:0}.empty{color:#c8d6c9;font-size:16px;font-weight:650}
+  .list-panel{padding:22px 23px;flex:1}.list-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:15px}.list-top h2{font-size:15px;margin:0}.count{font-size:11px;color:var(--muted);background:#f0eee7;border-radius:99px;padding:5px 9px}
+  .add-row{display:flex;gap:8px;margin-bottom:13px}.add-row input{min-width:0;flex:1;border:1px solid var(--line);background:#fbfaf6;border-radius:11px;padding:11px 12px;outline:none;font-size:13px}.add-row input:focus{border-color:var(--green);box-shadow:0 0 0 3px #315b4515}.add-row button{border:0;background:var(--lime);color:#28351d;border-radius:11px;padding:0 15px;font-size:13px;font-weight:850}
+  .food-list{display:flex;flex-wrap:wrap;gap:8px;max-height:155px;overflow:auto;padding:2px 1px 8px}.food-chip{display:flex;align-items:center;gap:7px;background:#f3f1ea;border:1px solid #ece9df;border-radius:99px;padding:7px 9px 7px 12px;font-size:12px;font-weight:650}.food-chip button{border:0;background:none;color:#999;font-size:16px;line-height:1;padding:0 1px}.food-chip button:hover{color:#c44}
+  .list-actions{display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--line);padding-top:13px;margin-top:7px}.text-btn{border:0;background:none;color:var(--muted);font-size:11px;padding:4px}.text-btn:hover{color:var(--ink)}.reset-btn{color:#b16d50}
+  .bottom-note{text-align:center;color:#a2a49b;font-size:11px;margin-top:26px}
+  .toast{position:fixed;left:50%;bottom:25px;transform:translate(-50%,20px);opacity:0;pointer-events:none;background:#20251f;color:#fff;padding:11px 17px;border-radius:99px;font-size:12px;transition:.25s;z-index:5}.toast.show{opacity:1;transform:translate(-50%,0)}
+  @media(max-width:760px){.shell{width:min(100% - 26px,540px);padding-top:22px}header{margin-bottom:34px}.layout{grid-template-columns:1fr;gap:15px}.wheel-panel{padding:18px}.wheel-wrap{width:min(100%,370px)}.side{gap:13px}.result{min-height:150px}.list-panel{padding:19px}.bottom-note{margin-top:20px}}
+  @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="shell">
+  <header><div class="brand"><span class="brand-mark">✳</span><span>LUNCH PICKER</span></div><div class="today" id="today"></div></header>
+  <section class="intro"><span class="eyebrow">✦ TODAY'S MENU RANDOMIZER</span><h1>점심 뭐 먹지<span style="color:#91a85e">?</span></h1><p>고민은 룰렛에게 맡기고, 맛있는 점심 먹으러 가요!</p></section>
+  <main class="layout">
+    <section class="panel wheel-panel">
+      <div class="panel-head"><h2>오늘의 메뉴 룰렛</h2><span class="sub">돌려서 결정하기</span></div>
+      <div class="wheel-wrap"><div class="pointer"></div><canvas id="wheel" width="800" height="800" aria-label="점심 메뉴 룰렛"></canvas><div class="hub">🍽️</div></div>
+      <button class="spin" id="spin">룰렛 돌리기 <span aria-hidden="true">↗</span></button>
+      <p class="hint">메뉴를 추가하거나 삭제해서 나만의 룰렛을 만들어보세요.</p>
+    </section>
+    <aside class="side">
+      <section class="panel result" aria-live="polite"><h2>✦ 오늘의 점심 당첨 메뉴</h2><p class="result-name" id="winner">아직 결정 전!</p><p class="result-desc" id="resultDesc">룰렛을 돌려 메뉴를 골라보세요.</p></section>
+      <section class="panel list-panel">
+        <div class="list-top"><h2>룰렛 메뉴 관리</h2><span class="count" id="count">8개 메뉴</span></div>
+        <form class="add-row" id="addForm"><input id="newFood" maxlength="18" placeholder="새로운 메뉴 입력" aria-label="추가할 메뉴"><button type="submit">+ 추가</button></form>
+        <div class="food-list" id="foodList"></div>
+        <div class="list-actions"><button class="text-btn" id="shuffle">메뉴 섞기 ↻</button><button class="text-btn reset-btn" id="reset">기본 메뉴로 초기화</button></div>
+      </section>
+    </aside>
+  </main>
+  <p class="bottom-note">MADE FOR BETTER LUNCH · 오늘도 맛점하세요 :)</p>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+(() => {
+  const defaults=['김치찌개','돈까스','마라탕','제육볶음','초밥','파스타','국밥','햄버거'];
+  const colors=['#dce9bd','#f3c7a9','#c8d9d0','#f1df9d','#d8c9e8','#f0c7c6','#c6d9eb','#e7d9b9','#d5e2a7','#f2d1a9'];
+  let foods=[...defaults], angle=0, spinning=false;
+  const canvas=document.getElementById('wheel'),ctx=canvas.getContext('2d');
+  const $=id=>document.getElementById(id);
+  $('today').textContent=new Intl.DateTimeFormat('ko-KR',{month:'long',day:'numeric',weekday:'long'}).format(new Date()).toUpperCase();
+  function draw(){
+    const n=foods.length,w=canvas.width,c=w/2,r=375;ctx.clearRect(0,0,w,w);
+    if(!n){ctx.beginPath();ctx.arc(c,c,r,0,Math.PI*2);ctx.fillStyle='#eee';ctx.fill();return}
+    const step=Math.PI*2/n;
+    for(let i=0;i<n;i++){
+      const start=angle+i*step-Math.PI/2,end=start+step;
+      ctx.beginPath();ctx.moveTo(c,c);ctx.arc(c,c,r,start,end);ctx.closePath();ctx.fillStyle=colors[i%colors.length];ctx.fill();
+      ctx.strokeStyle='#fffefa';ctx.lineWidth=5;ctx.stroke();
+      ctx.save();ctx.translate(c,c);ctx.rotate(start+step/2);ctx.textAlign='right';ctx.textBaseline='middle';
+      const font=Math.max(22,Math.min(34,390/n));ctx.font=`800 ${font}px Pretendard, sans-serif`;ctx.fillStyle='#30372d';
+      let label=foods[i];if(label.length>9)label=label.slice(0,8)+'…';
+      ctx.fillText(label,r-34,0);ctx.restore();
+    }
+    ctx.beginPath();ctx.arc(c,c,r,0,Math.PI*2);ctx.strokeStyle='#fff';ctx.lineWidth=9;ctx.stroke();
+  }
+  function renderList(){
+    $('foodList').innerHTML='';
+    foods.forEach((food,i)=>{
+      const chip=document.createElement('span');chip.className='food-chip';
+      const name=document.createElement('span');name.textContent=food;
+      const del=document.createElement('button');del.type='button';del.textContent='×';del.setAttribute('aria-label',food+' 삭제');
+      del.addEventListener('click',()=>{if(spinning)return;foods.splice(i,1);renderList();draw();$('winner').textContent='아직 결정 전!';$('resultDesc').textContent='룰렛을 돌려 메뉴를 골라보세요.'});
+      chip.append(name,del);$('foodList').append(chip);
+    });
+    $('count').textContent=foods.length+'개 메뉴';
+    $('spin').disabled=spinning||foods.length<2;
+  }
+  function toast(msg){$('toast').textContent=msg;$('toast').classList.add('show');setTimeout(()=>$('toast').classList.remove('show'),1900)}
+  $('addForm').addEventListener('submit',e=>{e.preventDefault();const v=$('newFood').value.trim();if(!v)return;if(foods.some(x=>x.toLowerCase()===v.toLowerCase())){toast('이미 등록된 메뉴예요!');return}if(foods.length>=20){toast('메뉴는 최대 20개까지 추가할 수 있어요.');return}foods.push(v);$('newFood').value='';renderList();draw();toast(v+' 추가 완료!')});
+  $('shuffle').addEventListener('click',()=>{if(spinning)return;for(let i=foods.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[foods[i],foods[j]]=[foods[j],foods[i]]}renderList();draw();toast('메뉴 순서를 섞었어요!')});
+  $('reset').addEventListener('click',()=>{if(spinning)return;foods=[...defaults];angle=0;renderList();draw();$('winner').textContent='아직 결정 전!';$('resultDesc').textContent='룰렛을 돌려 메뉴를 골라보세요.';toast('기본 메뉴로 돌아왔어요.')});
+  $('spin').addEventListener('click',()=>{
+    if(spinning||foods.length<2)return;spinning=true;renderList();$('winner').textContent='두근두근…';$('resultDesc').textContent='오늘의 메뉴를 고르는 중이에요!';
+    const start=angle,extra=Math.PI*2*(6+Math.random()*3)+Math.random()*Math.PI*2,duration=4300,begin=performance.now();
+    function frame(now){const t=Math.min(1,(now-begin)/duration),ease=1-Math.pow(1-t,4);angle=start+extra*ease;draw();if(t<1){requestAnimationFrame(frame)}else{
+      angle=angle%(Math.PI*2);const step=Math.PI*2/foods.length;
+      // Pointer is at 12 o'clock; convert the wheel's current rotation to the selected slice.
+      let relative=((Math.PI*1.5-angle)%(Math.PI*2)+Math.PI*2)%(Math.PI*2);
+      const index=Math.floor(relative/step)%foods.length;const chosen=foods[index];
+      $('winner').textContent=chosen;$('resultDesc').textContent='오늘 점심은 '+chosen+' 어때요? 맛있게 드세요! 🎉';
+      spinning=false;renderList();toast('오늘의 점심 메뉴가 정해졌어요!');}
+    }requestAnimationFrame(frame);
+  });
+  renderList();draw();
+})();
+</script>
+</body>
+</html>
