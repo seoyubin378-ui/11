@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="개인 포트폴리오 - 소개, 담당 업무, 주요 경력 및 프로젝트">
+  <title>Portfolio | YOUR NAME</title>
+  <style>
+    :root {
+      --bg: #f6f8fc;
+      --surface: #ffffff;
+      --ink: #17233b;
+      --muted: #68758b;
+      --line: #e6ebf2;
+      --blue: #4263eb;
+      --blue-dark: #2f4fc9;
+      --navy: #111d35;
+      --soft-blue: #edf2ff;
+      --shadow: 0 18px 50px rgba(24, 42, 78, .08);
+      --radius: 22px;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0; color: var(--ink); background: var(--bg);
+      font-family: Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans KR", sans-serif;
+      line-height: 1.65; -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; }
+    .wrap { width: min(1120px, calc(100% - 48px)); margin: 0 auto; }
+    header {
+      position: sticky; top: 0; z-index: 20; background: rgba(255,255,255,.88);
+      backdrop-filter: blur(16px); border-bottom: 1px solid rgba(230,235,242,.85);
+    }
+    .nav { height: 76px; display: flex; align-items: center; justify-content: space-between; }
+    .brand { font-size: 19px; font-weight: 850; letter-spacing: -.7px; }
+    .brand span { color: var(--blue); }
+    .nav-links { display: flex; gap: 32px; align-items: center; color: #536078; font-size: 14px; font-weight: 650; }
+    .nav-links a { transition: color .2s; }
+    .nav-links a:hover { color: var(--blue); }
+    .nav-cta { background: var(--navy); color: white !important; padding: 10px 17px; border-radius: 999px; }
+    .menu-btn { display: none; border: 0; background: transparent; color: var(--ink); font-size: 25px; cursor: pointer; }
+    .hero { padding: 92px 0 78px; overflow: hidden; }
+    .hero-grid { display: grid; grid-template-columns: 1.15fr .85fr; gap: 64px; align-items: center; }
+    .eyebrow { display: inline-flex; align-items: center; gap: 9px; color: var(--blue); font-size: 12px; font-weight: 800; letter-spacing: 1.8px; text-transform: uppercase; }
+    .eyebrow:before { content: ""; width: 24px; height: 2px; background: var(--blue); }
+    h1 { font-size: clamp(42px, 5.5vw, 68px); line-height: 1.16; letter-spacing: -3px; margin: 22px 0 22px; font-weight: 850; }
+    h1 em { color: var(--blue); font-style: normal; }
+    .hero-copy { color: var(--muted); font-size: 17px; max-width: 570px; line-height: 1.9; }
+    .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 32px; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 9px; border-radius: 12px; padding: 14px 20px; font-size: 14px; font-weight: 750; transition: transform .2s, box-shadow .2s, background .2s; cursor: pointer; }
+    .btn:hover { transform: translateY(-3px); box-shadow: 0 10px 24px rgba(44,76,170,.16); }
+    .btn-primary { color: white; background: var(--blue); }
+    .btn-primary:hover { background: var(--blue-dark); }
+    .btn-outline { border: 1px solid var(--line); background: white; }
+    .hero-visual { min-height: 390px; position: relative; display: grid; place-items: center; }
+    .orb { width: min(340px, 80vw); aspect-ratio: 1; border-radius: 50%; background: linear-gradient(145deg,#e6edff,#cbd8ff 58%,#aebfff); position: relative; box-shadow: inset -18px -20px 50px rgba(67,99,235,.12), 0 35px 70px rgba(60,91,190,.13); }
+    .orb:before, .orb:after { content: ""; position: absolute; border: 1px solid rgba(66,99,235,.22); border-radius: 50%; inset: -24px; }
+    .orb:after { inset: -48px; border-color: rgba(66,99,235,.12); }
+    .avatar-mark { position: absolute; inset: 0; display: grid; place-items: center; color: white; font-size: 104px; font-weight: 850; letter-spacing: -8px; text-shadow: 0 12px 28px rgba(31,59,150,.2); }
+    .float-card { position: absolute; background: white; border: 1px solid rgba(230,235,242,.8); border-radius: 16px; padding: 14px 17px; box-shadow: var(--shadow); font-size: 12px; color: var(--muted); }
+    .float-card strong { display: block; color: var(--ink); font-size: 14px; margin-bottom: 2px; }
+    .float-one { top: 46px; right: -4px; }
+    .float-two { bottom: 42px; left: -8px; }
+    section { padding: 82px 0; }
+    .section-head { display: flex; justify-content: space-between; align-items: end; gap: 24px; margin-bottom: 34px; }
+    .section-kicker { color: var(--blue); font-size: 12px; font-weight: 850; letter-spacing: 1.7px; }
+    h2 { margin: 8px 0 0; font-size: clamp(28px, 3vw, 38px); line-height: 1.25; letter-spacing: -1.5px; }
+    .section-desc { color: var(--muted); max-width: 430px; font-size: 14px; }
+    .about-grid { display: grid; grid-template-columns: .8fr 1.2fr; gap: 22px; }
+    .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 30px; box-shadow: 0 8px 30px rgba(24,42,78,.025); }
+    .profile-card { background: var(--navy); color: white; position: relative; overflow: hidden; min-height: 270px; }
+    .profile-card:after { content: ""; position: absolute; width: 210px; height: 210px; border-radius: 50%; right: -70px; bottom: -90px; border: 1px solid rgba(255,255,255,.16); box-shadow: 0 0 0 24px rgba(255,255,255,.035), 0 0 0 48px rgba(255,255,255,.025); }
+    .profile-label { color: #a9b8df; font-size: 12px; letter-spacing: 1.5px; font-weight: 800; }
+    .profile-name { font-size: 30px; font-weight: 850; margin: 12px 0 4px; letter-spacing: -1px; }
+    .profile-role { color: #c2cce4; font-size: 14px; }
+    .profile-meta { margin-top: 34px; color: #d7def0; font-size: 13px; line-height: 2; }
+    .about-text { color: #58657b; font-size: 15px; line-height: 2; }
+    .about-text strong { color: var(--ink); }
+    .tag-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 22px; }
+    .tag { background: var(--soft-blue); color: #3c59c7; border-radius: 999px; padding: 7px 12px; font-size: 12px; font-weight: 750; }
+    .info-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; }
+    .info-card { padding: 25px; }
+    .icon-box { width: 42px; height: 42px; border-radius: 13px; display: grid; place-items: center; color: var(--blue); background: var(--soft-blue); font-size: 19px; margin-bottom: 18px; }
+    .info-card h3 { margin: 0 0 8px; font-size: 17px; letter-spacing: -.4px; }
+    .info-card p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.85; }
+    .career { display: grid; grid-template-columns: 180px 1fr; gap: 28px; padding: 25px 0; border-top: 1px solid var(--line); }
+    .career:first-of-type { border-top: 0; }
+    .career-date { color: var(--blue); font-weight: 800; font-size: 13px; }
+    .career h3 { margin: 0 0 5px; font-size: 18px; }
+    .career-org { color: var(--muted); font-size: 13px; margin-bottom: 10px; }
+    .career p { color: #66738a; font-size: 14px; margin: 0; }
+    .project-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; }
+    .project-card { padding: 0; overflow: hidden; transition: transform .22s, box-shadow .22s; }
+    .project-card:hover { transform: translateY(-5px); box-shadow: var(--shadow); }
+    .project-top { height: 145px; padding: 22px; display: flex; align-items: end; background: linear-gradient(135deg,#eaf0ff,#cbd8ff); }
+    .project-card:nth-child(2) .project-top { background: linear-gradient(135deg,#e7f5f3,#bce4dc); }
+    .project-card:nth-child(3) .project-top { background: linear-gradient(135deg,#f3edff,#d9c9ff); }
+    .project-number { font-size: 46px; font-weight: 900; color: rgba(34,57,125,.28); letter-spacing: -3px; }
+    .project-body { padding: 22px; }
+    .project-body h3 { margin: 0 0 7px; font-size: 17px; }
+    .project-body p { margin: 0; color: var(--muted); font-size: 13px; min-height: 44px; }
+    .project-link { display: inline-flex; margin-top: 18px; color: var(--blue); font-size: 13px; font-weight: 800; }
+    .shortcut-section { background: var(--navy); color: white; }
+    .shortcut-section .section-kicker { color: #9eb3ff; }
+    .shortcut-section .section-desc { color: #aebbd5; }
+    .shortcut-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; }
+    .shortcut { display: flex; align-items: center; justify-content: space-between; gap: 15px; padding: 23px; border: 1px solid rgba(255,255,255,.14); border-radius: 17px; background: rgba(255,255,255,.055); transition: .2s; }
+    .shortcut:hover { background: rgba(255,255,255,.12); transform: translateY(-4px); border-color: rgba(160,181,255,.5); }
+    .shortcut-left { display: flex; align-items: center; gap: 14px; }
+    .shortcut-num { width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; background: #4263eb; font-size: 17px; font-weight: 850; }
+    .shortcut strong { display: block; font-size: 14px; }
+    .shortcut small { color: #aebbd5; font-size: 11px; }
+    .arrow { color: #aebeff; font-size: 20px; transition: transform .2s; }
+    .shortcut:hover .arrow { transform: translateX(4px); }
+    footer { padding: 28px 0; color: #8995a9; font-size: 12px; }
+    .footer-inner { display: flex; justify-content: space-between; gap: 16px; }
+    .reveal { opacity: 0; transform: translateY(18px); transition: opacity .65s ease, transform .65s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    @media (max-width: 800px) {
+      .hero { padding: 66px 0 55px; }
+      .hero-grid { grid-template-columns: 1fr; gap: 30px; }
+      .hero-visual { min-height: 320px; }
+      .orb { width: 250px; }
+      .avatar-mark { font-size: 78px; }
+      .about-grid { grid-template-columns: 1fr; }
+      .info-grid, .project-grid { grid-template-columns: 1fr 1fr; }
+      .shortcut-grid { grid-template-columns: 1fr; }
+      .section-head { align-items: start; flex-direction: column; gap: 10px; }
+    }
+    @media (max-width: 600px) {
+      .wrap { width: min(100% - 36px, 1120px); }
+      .nav { height: 66px; }
+      .menu-btn { display: block; }
+      .nav-links { display: none; position: absolute; top: 66px; left: 0; right: 0; padding: 18px 24px 22px; background: white; border-bottom: 1px solid var(--line); flex-direction: column; align-items: stretch; gap: 16px; }
+      .nav-links.open { display: flex; }
+      .nav-cta { text-align: center; }
+      h1 { letter-spacing: -2px; }
+      .hero-copy { font-size: 15px; }
+      section { padding: 62px 0; }
+      .info-grid, .project-grid { grid-template-columns: 1fr; }
+      .career { grid-template-columns: 1fr; gap: 7px; }
+      .card { padding: 23px; }
+      .float-one { right: -2px; top: 22px; }
+      .float-two { left: -2px; bottom: 22px; }
+      .footer-inner { flex-direction: column; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; }
+      .reveal { opacity: 1; transform: none; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap nav">
+      <a class="brand" href="#home">MY<span>.</span>PORTFOLIO</a>
+      <button class="menu-btn" id="menuBtn" aria-label="메뉴 열기" aria-expanded="false">☰</button>
+      <nav class="nav-links" id="navLinks" aria-label="주요 메뉴">
+        <a href="#about">소개</a>
+        <a href="#work">담당 업무</a>
+        <a href="#career">경력</a>
+        <a href="#projects">프로젝트</a>
+        <a class="nav-cta" href="#contact">자료 바로가기 ↗</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" id="home">
+      <div class="wrap hero-grid">
+        <div>
+          <div class="eyebrow">Personal Portfolio</div>
+          <h1>생각을 구체화하고<br><em>가치를 만드는 사람</em></h1>
+          <p class="hero-copy">
+            안녕하세요, <strong>YOUR NAME</strong>입니다.<br>
+            기획부터 실행까지, 더 나은 결과를 만들기 위해 고민하고 행동합니다.
+            저의 경험과 프로젝트를 소개합니다.
+          </p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#about">소개 보기 <span>↓</span></a>
+            <a class="btn btn-outline" href="#projects">프로젝트 살펴보기 ↗</a>
+          </div>
+        </div>
+        <div class="hero-visual" aria-label="프로필 그래픽">
+          <div class="orb"><div class="avatar-mark">YN.</div></div>
+          <div class="float-card float-one"><strong>MY APPROACH</strong>기획 · 실행 · 성장</div>
+          <div class="float-card float-two"><strong>FOCUS</strong>문제 해결과 협업</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="about">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <div><div class="section-kicker">01 / ABOUT ME</div><h2>저를 소개합니다</h2></div>
+          <p class="section-desc">나의 강점과 업무 철학, 그리고 함께 일하는 방식에 대해 소개합니다.</p>
+        </div>
+        <div class="about-grid">
+          <div class="card profile-card reveal">
+            <div class="profile-label">PROFILE</div>
+            <div class="profile-name">YOUR NAME</div>
+            <div class="profile-role">직무 / 직책을 입력하세요</div>
+            <div class="profile-meta">
+              소속&nbsp;&nbsp; 회사명 또는 기관명<br>
+              담당&nbsp;&nbsp; 주요 담당 업무<br>
+              분야&nbsp;&nbsp; 관심 분야 및 전문 영역
+            </div>
+          </div>
+          <div class="card reveal">
+            <div class="about-text">
+              <strong>복잡한 일을 명확하게 정리하고, 실행 가능한 결과로 연결하는 사람</strong>입니다.<br><br>
+              맡은 업무의 목적을 먼저 이해하고, 필요한 사람들과 적극적으로 소통하며
+              완성도 높은 결과를 만드는 것을 중요하게 생각합니다. 새로운 도구와 기술을
+              배우는 데 열려 있으며, 작은 개선을 꾸준히 쌓아 더 나은 업무 경험을 만들어갑니다.
+              <br><br>
+              이 영역에는 본인의 실제 경험, 업무 태도, 핵심 강점을 3~5문장 정도로 수정해 주세요.
+            </div>
+            <div class="tag-row">
+              <span class="tag">기획 및 운영</span><span class="tag">문제 해결</span>
+              <span class="tag">커뮤니케이션</span><span class="tag">협업</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="work" style="background:#fff">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <div><div class="section-kicker">02 / WHAT I DO</div><h2>담당 업무 및 역량</h2></div>
+          <p class="section-desc">현재 수행 중인 업무와 주요 역량을 핵심 영역별로 정리했습니다.</p>
+        </div>
+        <div class="info-grid">
+          <article class="card info-card reveal">
+            <div class="icon-box">✦</div><h3>기획 및 문서화</h3>
+            <p>프로젝트 목표와 요구사항을 정리하고, 실행 방향 및 세부 계획을 수립합니다. 보고서와 기획 문서를 작성합니다.</p>
+          </article>
+          <article class="card info-card reveal">
+            <div class="icon-box">⌘</div><h3>운영 및 관리</h3>
+            <p>일정과 진행 상황을 관리하고, 업무 프로세스를 점검하며 안정적인 운영을 지원합니다.</p>
+          </article>
+          <article class="card info-card reveal">
+            <div class="icon-box">↗</div><h3>협업 및 개선</h3>
+            <p>내·외부 관계자와 원활하게 소통하고, 피드백을 반영해 결과물과 업무 방식을 개선합니다.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="career">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <div><div class="section-kicker">03 / EXPERIENCE</div><h2>주요 경력</h2></div>
+          <p class="section-desc">경력과 프로젝트 경험을 최신순으로 정리해 주세요.</p>
+        </div>
+        <div class="card reveal">
+          <div class="career">
+            <div class="career-date">20XX.XX — 현재</div>
+            <div><h3>직무 또는 담당 역할</h3><div class="career-org">회사명 / 기관명 · 부서명</div><p>주요 담당 업무, 책임 범위, 성과 및 기여 내용을 구체적으로 작성합니다.</p></div>
+          </div>
+          <div class="career">
+            <div class="career-date">20XX.XX — 20XX.XX</div>
+            <div><h3>이전 직무 또는 프로젝트</h3><div class="career-org">회사명 / 기관명 · 부서명</div><p>수행한 업무와 프로젝트 결과, 활용한 역량을 간결하게 정리합니다.</p></div>
+          </div>
+          <div class="career">
+            <div class="career-date">20XX.XX — 20XX.XX</div>
+            <div><h3>주요 활동 및 교육 경험</h3><div class="career-org">기관명 / 프로그램명</div><p>관련 교육, 자격, 대외활동 또는 주요 경험을 작성합니다.</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="projects" style="background:#fff">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <div><div class="section-kicker">04 / SELECTED WORKS</div><h2>주요 프로젝트</h2></div>
+          <p class="section-desc">대표 프로젝트를 간단히 소개하고 상세 자료로 연결할 수 있습니다.</p>
+        </div>
+        <div class="project-grid">
+          <article class="card project-card reveal">
+            <div class="project-top"><div class="project-number">01</div></div>
+            <div class="project-body"><h3>프로젝트 제목 01</h3><p>프로젝트의 목적과 주요 역할, 결과를 한두 문장으로 소개합니다.</p><a class="project-link" href="1.html">기획문서 보기 ↗</a></div>
+          </article>
+          <article class="card project-card reveal">
+            <div class="project-top"><div class="project-number">02</div></div>
+            <div class="project-body"><h3>프로젝트 제목 02</h3><p>직접 기획하거나 제작한 결과물의 핵심 내용을 소개합니다.</p><a class="project-link" href="2.html">결과물 보기 ↗</a></div>
+          </article>
+          <article class="card project-card reveal">
+            <div class="project-top"><div class="project-number">03</div></div>
+            <div class="project-body"><h3>프로젝트 제목 03</h3><p>발표 자료 또는 프로젝트 성과를 간결하게 소개합니다.</p><a class="project-link" href="3.html">슬라이드 보기 ↗</a></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="shortcut-section" id="contact">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <div><div class="section-kicker">GO DEEPER</div><h2>프로젝트 자료 바로가기</h2></div>
+          <p class="section-desc">아래 번호를 클릭하면 각 프로젝트의 상세 페이지로 이동합니다.</p>
+        </div>
+        <div class="shortcut-grid">
+          <a class="shortcut reveal" href="1.html"><div class="shortcut-left"><div class="shortcut-num">1</div><div><strong>기획문서</strong><small>Planning Document · MD</small></div></div><span class="arrow">↗</span></a>
+          <a class="shortcut reveal" href="2.html"><div class="shortcut-left"><div class="shortcut-num">2</div><div><strong>바이브코딩 결과물</strong><small>Vibe Coding · Demo</small></div></div><span class="arrow">↗</span></a>
+          <a class="shortcut reveal" href="3.html"><div class="shortcut-left"><div class="shortcut-num">3</div><div><strong>발표 슬라이드</strong><small>Presentation · Slides</small></div></div><span class="arrow">↗</span></a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap footer-inner">
+      <span>© <span id="year"></span> YOUR NAME. All rights reserved.</span>
+      <span>Designed with purpose · Built for growth</span>
+    </div>
+  </footer>
+
+  <script>
+    // 모바일 내비게이션
+    const menuBtn = document.getElementById('menuBtn');
+    const navLinks = document.getElementById('navLinks');
+    menuBtn.addEventListener('click', () => {
+      const isOpen = navLinks.classList.toggle('open');
+      menuBtn.setAttribute('aria-expanded', String(isOpen));
+      menuBtn.textContent = isOpen ? '×' : '☰';
+    });
+    navLinks.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        navLinks.classList.remove('open');
+        menuBtn.setAttribute('aria-expanded', 'false');
+        menuBtn.textContent = '☰';
+      });
+    });
+
+    // 스크롤 진입 애니메이션
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
